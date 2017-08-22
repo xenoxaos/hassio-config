@@ -1,0 +1,189 @@
+############################################################################
+#    @package          :     views
+#    @description      :     views visible on UI
+############################################################################
+homeassistant:
+  customize:
+    packages.views: &customize
+      haaska_hidden: true
+      homebridge_hidden: true
+      package: 'views'
+
+    ################################################
+    ## Group
+    ################################################
+    group.climate:
+      <<: *customize
+      icon: mdi:air-conditioner
+
+    group.downstairs:
+      <<: *customize
+      icon: mdi:arrow-down-bold-circle-outline
+
+    group.exterior:
+      <<: *customize
+      icon: mdi:tree
+
+    group.default_view:
+      <<: *customize
+      icon: mdi:account-location
+
+    group.lab:
+      <<: *customize
+      icon: mdi:test-tube
+
+    group.media:
+      <<: *customize
+      icon: mdi:theater
+
+    group.security:
+      <<: *customize
+      icon: mdi:security-home
+
+    group.cameras:
+      <<: *customize
+      icon: mdi:cctv
+
+    group.scenes:
+      <<: *customize
+      icon: mdi:creation
+
+    group.system:
+      <<: *customize
+      icon: mdi:server
+
+    group.upstairs:
+      <<: *customize
+      icon: mdi:arrow-up-bold-circle-outline
+
+    group.weather:
+      <<: *customize
+      icon: mdi:weather-sunny
+
+  ################################################
+  ## Customize Global
+  ################################################
+  customize_glob:
+    "group.all_*":
+      <<: *customize
+
+
+#####################################################################
+### Group (comment out default_view and enable home for all entities
+#####################################################################
+group:
+  #home:
+  default_view:
+    name: Home
+    view: yes
+    entities:
+      - group.travel_megs
+      - group.travel_rick
+      - group.device_status
+      - group.traffic_report
+
+  security:
+    name: Security
+    view: yes
+    entities:
+      - group.door_locks
+      - group.sensors
+      - group.door_sensors
+
+  cameras:
+    name: Cameras
+    view: yes
+    entities:
+      - group.camera_front_door
+      - group.camera_north_gate
+      - group.camera_north_ptz
+      - group.camera_kitchen_ptz
+
+  downstairs:
+    name: Downstairs
+    view: yes
+    entities:
+      - group.living_room_fan
+      - group.living_room_lighting
+      - group.entry_lighting
+      - group.accent_lights
+      - group.kitchen
+      - group.dining_room
+      - group.billiards_room
+      - group.office
+
+  upstairs:
+    name: Upstairs
+    view: yes
+    entities:
+      - group.master_bedroom
+      - group.master_bedroom_fan
+      - group.master_bed_lights
+      - group.master_bath
+      - media_player.kodi_bedroom
+      - group.nursery_wall
+
+  climate:
+    name: Climate
+    view: yes
+    entities:
+      - group.downstairs_climate
+      - group.downstairs_ecobee
+      - group.upstairs_climate
+      - group.upstairs_ecobee
+
+  scenes:
+    name: Scenes
+    view: yes
+    entities:
+      - group.lighting_scenes
+      - group.operational_modes
+      - group.automation_override
+
+  exterior:
+    name: Exterior
+    view: yes
+    entities:
+      - group.porch
+      - group.yard
+      - group.pool
+
+  weather:
+    name: Weather
+    view: yes
+    entities:
+      - sun.sun
+      - sensor.moon
+      - group.weather_summary
+      - group.weather_details
+      - group.precipitation
+      - group.3_day_forecast
+      #- group.river_info
+
+  media:
+    name: Media
+    view: yes
+    entities:
+      - group.living_room_tv
+      - group.directv
+      - group.onkyo_amp
+      - media_player.kodi_living_room
+      - media_player.firetv
+      - media_player.apple_tv
+
+  system:
+    name: System
+    view: yes
+    entities:
+      - updater.updater
+      - group.ha_status
+      - group.speedtest
+      - group.downloads
+
+  lab:
+    name: Lab
+    view: yes
+    entities:
+      - group.triggers
+      - group.things
+      - group.test_conditions

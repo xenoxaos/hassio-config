@@ -1,0 +1,166 @@
+#####################################################################
+#    @package          :     batteries
+#    @description      :     batteries, etc.
+#####################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+    package.node_anchors:
+      customize: &customize
+        package: 'batteries'
+
+      contained: &contained
+        <<: *customize
+        haaska_hidden: true
+        homebridge_hidden: true
+
+      exposed: &exposed
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+      hidden: &hidden
+        <<: *contained
+        hidden: true
+
+    ################################################
+    ## Group
+    ################################################
+    group.device_status:
+      <<: *contained
+      order: 3
+
+    ################################################
+    ## Sensor
+    ################################################
+    sensor.lock_beach_battery:
+      <<: *contained
+      friendly_name: "Beach Bathroom Lock Battery"
+
+    sensor.lock_south_battery:
+      <<: *contained
+      friendly_name: "South Lock Battery"
+
+    sensor.entry_multisensor_battery:
+      <<: *contained
+      friendly_name: "Foyer Multisensor Battery"
+
+    sensor.iphwn666_battery_level:
+      <<: *contained
+      friendly_name: "Rick's Phone Battery"
+      icon_template: >-
+        {% set battery_level = states('sensor.iphwn666_battery_level')|int('unknown') %}
+        {% if battery_level == 'unknown' %}
+          mdi:battery-unknown
+        {% else %}
+          {% set battery_round = (battery_level|int / 10)|int * 10 %}
+          {% if battery_round >= 100 %}
+            mdi:battery
+          {% elif battery_round > 0 %}
+            mdi:battery-{{ battery_round }}
+          {% else %}
+            mdi:battery-alert
+          {% endif %}
+        {% endif %}
+
+    sensor.iphone7_battery_level:
+      <<: *contained
+      friendly_name: "Meg's Phone Battery"
+      icon_template: >-
+        {% set battery_level = states('sensor.iphone7_battery_level')|int('unknown') %}
+        {% if battery_level == 'unknown' %}
+          mdi:battery-unknown
+        {% else %}
+          {% set battery_round = (battery_level|int / 10)|int * 10 %}
+          {% if battery_round >= 100 %}
+            mdi:battery
+          {% elif battery_round > 0 %}
+            mdi:battery-{{ battery_round }}
+          {% else %}
+            mdi:battery-alert
+          {% endif %}
+        {% endif %}
+
+
+#####################################################################
+### Group
+#####################################################################
+group:
+  Device Status:
+    entities:
+      - sensor.iphwn666_battery_level
+      - sensor.iphone7_battery_level
+      - sensor.lock_south_battery
+      - sensor.lock_beach_battery
+      - sensor.entry_multisensor_battery
+
+
+#####################################################################
+### Sensor
+#####################################################################
+sensor:
+  - platform: template
+    sensors:
+      ### Beach Lock Battery
+      lock_beach_battery:
+        entity_id: zwave.bathroom_entry
+        value_template: "{{ (states.zwave.bathroom_entry.attributes|default).battery_level|default|int('unknown') }}"
+        unit_of_measurement: '%'
+        icon_template: >-
+          {% set battery_level = states('sensor.lock_beach_battery')|int('unknown') %}
+          {% if battery_level == 'unknown' %}
+            mdi:battery-unknown
+          {% else %}
+            {% set battery_round = (battery_level|int / 10)|int * 10 %}
+            {% if battery_round >= 100 %}
+              mdi:battery
+            {% elif battery_round > 0 %}
+              mdi:battery-{{ battery_round }}
+            {% else %}
+              mdi:battery-alert
+            {% endif %}
+          {% endif %}
+
+
+      ### South Lock Battery
+      lock_south_battery:
+        entity_id: zwave.south_entry
+        value_template: "{{ (states.zwave.south_entry.attributes|default).battery_level|default|int('unknown') }}"
+        unit_of_measurement: '%'
+        icon_template: >-
+          {% set battery_level = states('sensor.lock_south_battery')|int('unknown') %}
+          {% if battery_level == 'unknown' %}
+            mdi:battery-unknown
+          {% else %}
+            {% set battery_round = (battery_level|int / 10)|int * 10 %}
+            {% if battery_round >= 100 %}
+              mdi:battery
+            {% elif battery_round > 0 %}
+              mdi:battery-{{ battery_round }}
+            {% else %}
+              mdi:battery-alert
+            {% endif %}
+          {% endif %}
+
+
+      ### Front entry Fibaro Multisensor Battery
+      entry_multisensor_battery:
+        entity_id: zwave.front_entry_fibaro_multisensor
+        value_template: "{{ (states.zwave.front_entry_fibaro_multisensor.attributes|default).battery_level|default|int('unknown') }}"
+        unit_of_measurement: '%'
+        icon_template: >-
+          {% set battery_level = states('sensor.entry_multisensor_battery')|int('unknown') %}
+          {% if battery_level == 'unknown' %}
+            mdi:battery-unknown
+          {% else %}
+            {% set battery_round = (battery_level|int / 10)|int * 10 %}
+            {% if battery_round >= 100 %}
+              mdi:battery
+            {% elif battery_round > 0 %}
+              mdi:battery-{{ battery_round }}
+            {% else %}
+              mdi:battery-alert
+            {% endif %}
+          {% endif %}

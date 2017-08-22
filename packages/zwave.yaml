@@ -1,0 +1,44 @@
+#####################################################################
+#    @package          :     zwave
+#    @description      :     zwave configuration
+#####################################################################
+
+#####################################################################
+### ZWave
+#####################################################################
+zwave:
+  usb_path: /dev/ttyACM0
+  #config_path: /srv/hass/hass_venv/lib/python3.4/site-packages/libopenzwave-0.3.1-py3.4-linux-armv7l.egg/config
+  network_key: !secret network_key
+  new_entity_ids: true
+
+  ################################################
+  ## Device Config
+  ################################################
+  #device_config: !include zwave_device_config.yaml
+
+  ################################################
+  ## Domain Config
+  ################################################
+  device_config_domain:
+    light:
+      refresh_value: true
+      polling_intensity: 1
+      delay: 3
+
+    lock:
+      polling_intensity: 2
+
+#    switch:
+#      polling_intensity: 1
+
+  ################################################
+  ## Global Config
+  ################################################
+  device_config_glob:
+    "cover.*_level":
+      invert_openclose_buttons: true
+
+    "zwave.somfy_unknown*":
+      ignored: true
+

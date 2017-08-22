@@ -1,0 +1,104 @@
+#####################################################################
+#    @package          :     kitchen_dining
+#    @description      :     kitchen and dining and associated automations, etc.
+#####################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+    package.node_anchors:
+      customize: &customize
+        package: 'kitchen_dining'
+
+      contained: &contained
+        <<: *customize
+        haaska_hidden: true
+        homebridge_hidden: true
+
+      exposed: &exposed
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+      hidden: &hidden
+        <<: *contained
+        hidden: true
+
+    ################################################
+    ## Group
+    ################################################
+    group.kitchen:
+      <<: *contained
+      order: 4
+
+    group.dining_room:
+      <<: *contained
+      order: 5
+
+    ################################################
+    ## Light
+    ################################################
+    light.kitchen_lights_level:
+      friendly_name: "Kitchen Lights"
+      icon: mdi:white-balance-incandescent
+
+    light.dining_room_chandelier_level:
+      friendly_name: "Dining Room Chandelier"
+      haaska_name: "Dining Room Light"
+      icon: mdi:ceiling-light
+
+    ################################################
+    ## Cover
+    ################################################
+    cover.kitchen_roller_shade_level:
+      friendly_name: "Kitchen Shade"
+      homebridge_cover_type: rollershutter
+      icon: mdi:blinds
+
+    cover.kitchen_roller_shade_switch:
+      <<: *hidden
+      friendly_name: "Kitchen Shade State"
+      icon: mdi:blinds
+
+#####################################################################
+### Group
+#####################################################################
+group:
+  Kitchen:
+    control: hidden
+    entities:
+      - light.kitchen_lights_level
+      - cover.kitchen_roller_shade_level
+
+  Dining Room:
+    entities:
+      - light.dining_room_chandelier_level
+
+
+#####################################################################
+### Automation
+#####################################################################
+automation:
+  ### Raise the kitchen shade
+  - alias: Kitchen Shade Up
+    initial_state: 'on'
+    trigger:
+      - platform: sun
+        event: sunrise
+        offset: '-00:15:00'
+
+    action:
+      - service: cover.open_cover
+        entity_id: cover.kitchen_roller_shade_level
+
+  ### Lower the kitchen shade
+  - alias: Kitchen Shade Down
+    initial_state: 'on'
+    trigger:
+      - platform: time
+        at: '21:00:00'
+
+    action:
+      - service: cover.stop_cover
+        entity_id: cover.kitchen_roller_shade_level

@@ -1,0 +1,456 @@
+#####################################################################
+#    @package          :     scenes
+#    @description      :     scenes and scenarios for lighting, etc.
+#####################################################################
+homeassistant:
+  customize_domain:
+    scene:
+      icon: mdi:play-circle
+
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+    package.node_anchors:
+      customize: &customize
+        package: 'scenes'
+
+      contained: &contained
+        <<: *customize
+        haaska_hidden: true
+        homebridge_hidden: true
+
+      exposed: &exposed
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+      hidden: &hidden
+        <<: *contained
+        hidden: true
+
+    ################################################
+    ## Group
+    ################################################
+    group.operational_modes:
+      <<: *contained
+      order: 1
+
+    group.lighting_scenes:
+      <<: *contained
+      order: 2
+
+    group.automation_override:
+      <<: *contained
+      order: 3
+
+    group.interior_lights:
+      haaska_name: "Interior Lights"
+
+    group.stateless_lights:
+      <<: *hidden
+
+    ################################################
+    ## Input Boolean
+    ################################################
+    input_boolean.visitor_mode:
+      <<: *exposed
+      icon: mdi:account
+
+    input_boolean.holiday:
+      <<: *exposed
+      icon: mdi:snowman
+
+    input_boolean.dinner_time:
+      <<: *exposed
+      icon: mdi:food-fork-drink
+
+    ################################################
+    ## Sensor
+    ################################################
+    sensor.time_brightness:
+      <<: *hidden
+
+    ################################################
+    ## Script
+    ################################################
+    script.morning_sequence:
+      <<: *hidden
+
+    script.away:
+      <<: *hidden
+
+    script.company_mode:
+      friendly_name: "Company Mode"
+      icon: mdi:play-circle
+
+    script.bedtime:
+      friendly_name: "Bedtime"
+      icon: mdi:hotel
+
+    script.shutdown_lights:
+      friendly_name: "Shutdown"
+      icon: mdi:play-circle
+
+    ################################################
+    ## Scene
+    ################################################
+    scene.morning:
+      icon: mdi:weather-sunset-up
+
+    scene.living_room_bright:
+      friendly_name: "Living Room Bright"
+      icon: mdi:play-circle
+
+    scene.living_room_normal:
+      friendly_name: "Living Room Normal"
+      icon: mdi:play-circle
+
+    scene.living_room_cloudy:
+      friendly_name: "Living Room Cloudy"
+      icon: mdi:play-circle
+
+    scene.living_room_dim:
+      friendly_name: "Living Room Dim"
+      icon: mdi:play-circle
+
+    scene.movie_time:
+      friendly_name: "Movie Time"
+      icon: mdi:play-circle
+
+    scene.movie_paused:
+      icon: mdi:play-circle
+      hidden: true
+      haaska_hidden: true
+
+    scene.movie_ended:
+      icon: mdi:play-circle
+      hidden: true
+      haaska_hidden: true
+
+
+#####################################################################
+### Group
+#####################################################################
+group:
+  Operational Modes:
+    control: hidden
+    entities:
+      - input_boolean.visitor_mode
+      - input_boolean.holiday
+      - script.company_mode
+
+  Lighting Scenes:
+    control: hidden
+    entities:
+      - scene.morning
+      - input_boolean.dinner_time
+      - script.bedtime
+      - scene.movie_time
+      - scene.living_room_dim
+      - scene.living_room_cloudy
+      - scene.living_room_normal
+      - scene.living_room_bright
+      - script.shutdown_lights
+
+  Automation Override:
+    control: hidden
+    entities:
+      - automation.away_mode_on
+      - automation.south_door_unlock_on_arrival
+
+  Interior Lights:
+    entities:
+      - group.accent_lights
+      - light.entryway_lights
+      - light.foyer_lights_level
+      - light.family_room_lights
+      - light.master_bed_entry_level
+      - light.master_bedroom
+      - light.master_bed_ceiling_level
+      - light.office_desk_lamp
+      - light.master_bedroom_chandelier_level
+      - switch.billiards_room_lights_switch
+      - light.kitchen_lights_level
+      - light.dining_room_chandelier_level
+
+## Lights which do not report state (ceiling fans)
+  Stateless Lights:
+    entities:
+      - switch.living_room_fan_light
+      - switch.master_bedroom_fan_light
+
+
+#####################################################################
+### Input Boolean
+#####################################################################
+input_boolean:
+  visitor_mode:
+    name: Visitor Mode
+    initial: off
+
+  holiday:
+    name: Holiday Mode
+    initial: off
+
+  dinner_time:
+    name: Dinner Time
+    initial: off
+
+
+################################################################
+## Sensor
+################################################################
+sensor:
+  ### Time Based Brightness
+  - platform: template
+    sensors:
+      time_brightness:
+        value_template: >-
+          {%- if now().strftime('%H%M')|int < 600 -%}
+            64
+          {%- elif now().strftime('%H%M')|int < 700 -%}
+            128
+          {%- elif now().strftime('%H%M')|int < 800 -%}
+            192
+          {%- elif now().strftime('%H%M')|int < 2000 -%}
+            255
+          {%- elif now().strftime('%H%M')|int < 2100 -%}
+            192
+          {%- elif now().strftime('%H%M')|int < 2200 -%}
+            128
+          {%- else -%}
+            64
+          {%- endif -%}
+
+#       warnings: false
+
+
+#####################################################################
+### Scene
+#####################################################################
+scene:
+  - name: Morning
+    entities:
+      light.foyer_lights_level:
+        state: on
+        brightness: 255
+        transition: 5
+
+  # turn on the master bedroom chandelier
+      light.master_bedroom_chandelier_level:
+        state: on
+        brightness: 50
+
+  # turn on the accent_lights
+      group.accent_lights: on
+
+  # turn on the living room lamp
+      light.living_room_lamp:
+        state: on
+        brightness: 254
+        transition: 600
+
+  # turn on the hue entry_lighting
+      light.entryway_lights:
+        state: on
+        brightness: 140
+        transition: 900
+
+  # turn on the hue living_room_ceiling lights
+      group.living_room_ceiling:
+        state: on
+        brightness: 140
+        transition: 900
+
+  # turn on the kitchen lights
+      light.kitchen_lights_level:
+        state: on
+        brightness: 170
+
+
+#####################################################################
+### Script
+#####################################################################
+script:
+  ### Morning Wakeup Sequence
+  morning_sequence:
+    sequence:
+    - service: light.turn_on
+      data:
+        entity_id: light.foyer_lights_level
+        brightness: 255
+        transition: 30
+
+    - service: light.turn_on
+      data:
+        entity_id: light.master_bedroom_chandelier_level
+        brightness: 50
+
+    - service: homeassistant.turn_on
+      entity_id: group.accent_lights
+
+    - delay:
+        minutes: 7
+
+    - service: light.turn_on
+      data:
+        entity_id: light.living_room_lamp
+        brightness: 220
+        transition: 60
+
+    - delay:
+        minutes: 7
+
+    - service: light.turn_on
+      data:
+        entity_id:
+          - light.entryway_lights
+          - group.living_room_ceiling
+        brightness: 140
+        transition: 120
+
+    - delay:
+        minutes: 7
+
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights_level
+        brightness: 170
+
+
+  ### Bedtime Mode Sequence
+  bedtime:
+    sequence:
+    # lock up
+    - service: lock.lock
+
+    # turn off all the "things"
+    - service: homeassistant.turn_off
+      entity_id: group.things
+
+    - service: switch.turn_off
+      entity_id: switch.billiards_room
+
+    - service: light.turn_on
+      data:
+        entity_id: light.master_bedroom_chandelier_level
+        brightness: 50
+
+    - service: light.turn_on
+      data:
+        entity_id: light.under_bed_lights
+        rgb_color: [0,55,55]
+
+    - delay:
+        minutes: 5
+
+    - service: light.turn_on
+      data:
+        entity_id: light.master_bedroom_chandelier_level
+        brightness: 40
+
+    - delay:
+        minutes: 7
+
+    - service: light.turn_off
+      data:
+        entity_id: light.master_bedroom_chandelier_level
+        transition: 60
+
+    - service: homeassistant.turn_off
+      entity_id: group.interior_lights
+
+    - delay:
+        minutes: 1.5
+
+    - service: light.turn_off
+      entity_id: light.under_bed_lights
+
+
+  ### Away Mode Sequence
+  away:
+    sequence:
+    # lock up
+    - service: lock.lock
+
+    # turn off all lights (except porch)
+    - service: homeassistant.turn_off
+      entity_id: group.interior_lights
+
+    - service: homeassistant.turn_off
+      entity_id: group.exterior_lights
+
+    # turn off all the "things"
+    - service: homeassistant.turn_off
+      entity_id: group.things
+
+    - service: notify.pushbullet
+      data:
+        title: "Away Mode ON"
+        target: "device/Chrome"
+        message: "It appears nobody's home; away mode activated."
+
+    - service: notify.ios_iphwn666
+      data:
+        title: "Away Mode ON"
+        message: "It appears nobody's home; away mode activated."
+
+
+  ### Company Mode Sequence
+  company_mode:
+    sequence:
+    - service: switch.turn_on
+      entity_id: switch.outdoor_speakers
+
+    - service: scene.turn_on
+      entity_id: scene.living_room_bright
+
+    - service: lock.unlock
+
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen_lights_level
+        brightness: 175
+
+    - service: light.turn_on
+      data:
+        entity_id: light.dining_room_chandelier_level
+        brightness: 130
+
+    - service: switch.turn_on
+      entity_id: switch.billiards_room_lights_switch
+
+    - service: switch.turn_on
+      entity_id: switch.patio_party_lights_switch
+
+    - service: switch.turn_on
+      entity_id: switch.pool_light_switch
+
+
+#####################################################################
+### Automation
+#####################################################################
+automation:
+  ### Weekday Wakeup
+  - alias: Morning Sequence
+    initial_state: 'on'
+    trigger:
+      - platform: time
+        at: '05:55:00'
+
+    condition:
+      - condition: state
+        entity_id: group.all_devices
+        state: 'home'
+
+      - condition: state
+        entity_id: input_boolean.holiday
+        state: 'off'
+
+      - condition: state
+        entity_id: binary_sensor.workday_sensor
+        state: 'on'
+
+    action:
+      - service: script.morning_sequence

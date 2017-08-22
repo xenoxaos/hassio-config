@@ -1,0 +1,187 @@
+#####################################################################
+#    @package          :     security_sensors
+#    @description      :     security_sensors and associated automations, etc.
+#####################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+    package.node_anchors:
+      customize: &customize
+        package: 'security_sensors'
+
+      contained: &contained
+        <<: *customize
+        haaska_hidden: true
+        homebridge_hidden: true
+
+      exposed: &exposed
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+      hidden: &hidden
+        <<: *contained
+        hidden: true
+
+    ################################################
+    ## Group
+    ################################################
+    group.sensors:
+      <<: *contained
+      order: 3
+
+    group.door_sensors:
+      <<: *contained
+      order: 4
+
+    ################################################
+    ## Sensor
+    ################################################
+    sensor.front_entry_motion:
+      <<: *contained
+      friendly_name: "Front Entry Motion"
+      icon: mdi:run
+
+    sensor.front_entry_fibaro_multisensor_luminance:
+      <<: *contained
+      friendly_name: "Front Entry Light Sensor"
+      icon: mdi:white-balance-sunny
+
+    sensor.front_door_state:
+      <<: *contained
+      friendly_name: "Front Door"
+      #icon: mdi:home-outline
+      entity_picture: /local/door-open-blue-128.ico
+
+    sensor.kitchen_ptz_motion_detected:
+      <<: *contained
+      friendly_name: "Kitchen PTZ Motion"
+      icon: mdi:run
+
+    sensor.north_ptz_motion_detected:
+      <<: *contained
+      friendly_name: "North PTZ Motion"
+      icon: mdi:run
+
+    sensor.kitchen_ptz_ptz_preset:
+      <<: *contained
+      friendly_name: "Kitchen PTZ Preset"
+      icon: mdi:arrow-expand-all
+
+    sensor.north_ptz_ptz_preset:
+      <<: *contained
+      friendly_name: "North PTZ Preset"
+      icon: mdi:arrow-expand-all
+
+    sensor.kitchen_ptz_sd_used:
+      <<: *contained
+      friendly_name: "Kitchen PTZ SD Card"
+      icon: mdi:sd
+
+    sensor.north_ptz_sd_used:
+      <<: *contained
+      friendly_name: "North PTZ SD Card"
+      icon: mdi:sd
+
+    sensor.crime:
+      <<: *contained
+      icon: mdi:bomb
+
+
+#####################################################################
+### Group
+#####################################################################
+group:
+  Sensors:
+    entities:
+      - binary_sensor.living_room_occupancy
+      - binary_sensor.office_occupancy
+      - binary_sensor.upstairs_occupancy
+      - binary_sensor.kids_room_occupancy
+      - binary_sensor.guest_room_occupancy
+      - sensor.front_entry_motion
+      - sensor.kitchen_ptz_motion_detected
+      - sensor.north_ptz_motion_detected
+      - sensor.front_entry_fibaro_multisensor_luminance
+      - sensor.crime
+
+  Door Sensors:
+    entities:
+      - sensor.front_door_state
+
+#####################################################################
+### Sensor
+#####################################################################
+sensor:
+### Fibaro Motion Detector status
+  - platform: template
+    sensors:
+      front_entry_motion:
+        value_template: >-
+          {% set state = states('sensor.front_entry_fibaro_multisensor_burglar') %}
+          {% if state == '0' %}
+            clear
+          {% elif state == '8' %}
+            detected
+          {% elif state == '3' %}
+            tamper
+          {% elif state == '254' %}
+            sleeping
+          {% else %}
+            {{ state|title }}
+          {% endif %}
+
+### Front Door status
+  - platform: template
+    sensors:
+      front_door_state:
+        value_template: >-
+          {% set state = states('sensor.front_door_contact_access_control') %}
+          {% if state == '22' %}
+            open
+          {% elif state == '23' %}
+            closed
+          {% else %}
+            {{ state|title }}
+          {% endif %}
+
+### Amcrest Camera Sensors
+  - platform: amcrest
+#    host: !secret north_ptz_host
+#    port: !secret north_ptz_port
+#    name: "North PTZ"
+#    username: !secret camera_user
+#    password: !secret camera_password
+#    monitored_conditions:
+#      - motion_detector
+#  #    - sdcard
+#  #    - ptz_preset
+#
+#  - platform: amcrest
+#    host: !secret kitchen_ptz_host
+#    port: !secret kitchen_ptz_port
+#    name: "Kitchen PTZ"
+#    username: !secret camera_user
+#    password: !secret camera_password
+#    monitored_conditions:
+#      - motion_detector
+#  #    - sdcard
+#  #    - ptz_preset
+
+
+### Crime Reports
+  - platform: crimereports
+    name: Crime
+    radius: 4000
+    exclude:
+    - Disorder
+    - Drugs
+    - Other
+    - Pedestrian Stop
+    - Proactive Policing
+    - Quality of Life
+    - Traffic
+    - Vehicle Recovery
+    - Vehicle Stop

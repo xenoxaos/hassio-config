@@ -1,0 +1,25 @@
+#####################################################################
+### LOGGER
+#####################################################################
+
+logger:
+#  default: debug
+
+  default: error
+  logs:
+    homeassistant.components.camera: critical
+    homeassistant.components.media_player: critical
+    homeassistant.components.climate: debug
+    homeassistant.components.switch: debug
+    homeassistant.components.automation: debug
+    homeassistant.components.script: debug
+    homeassistant.components.light: debug
+    homeassistant.components.scene: debug
+#    homeassistant.components.input_slider: debug
+#    homeassistant.components.zwave: debug
+#    homeassistant.components.cover: debug
+#    homeassistant.components.mqtt: debug
+#    homeassistant.components.device_tracker: debug
+#    homeassistant.components.group: debug
+#    homeassistant.components.sensor: debug
+#    homeassistant.components.notify: debug

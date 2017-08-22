@@ -1,0 +1,243 @@
+############################################################################
+#    @package          :     climate_downstairs
+#    @description      :     climate_downstairs, and associated automations, scenes, etc.
+############################################################################
+homeassistant:
+  customize:
+    ################################################
+    ## Node Anchors
+    ################################################
+    package.node_anchors:
+      customize: &customize
+        package: 'climate_downstairs'
+
+      contained: &contained
+        <<: *customize
+        haaska_hidden: true
+        homebridge_hidden: true
+
+      exposed: &exposed
+        <<: *customize
+        haaska_hidden: false
+        homebridge_hidden: false
+
+      hidden: &hidden
+        <<: *contained
+        hidden: true
+
+    ################################################
+    ## Group
+    ################################################
+    group.downstairs_climate:
+      <<: *contained
+      order: 1
+
+    group.downstairs_ecobee:
+      <<: *contained
+      order: 2
+
+    script.ecobee_ds_home:
+      <<: *contained
+      friendly_name: "Ecobee Downstairs Home"
+      entity_picture: /local/ecobee.png
+
+    script.ecobee_ds_away:
+      <<: *contained
+      friendly_name: "Ecobee Downstairs Away"
+      entity_picture: /local/ecobee.png
+
+    script.ecobee_ds_sleep:
+      <<: *contained
+      friendly_name: "Ecobee Downstairs Sleep"
+      entity_picture: /local/ecobee.png
+
+    script.ecobee_ds_resume:
+      <<: *contained
+      friendly_name: "Ecobee Downstairs Resume"
+      entity_picture: /local/ecobee.png
+
+    sensor.ds_avg_temp:
+      <<: *contained
+      icon: mdi:chart-areaspline
+
+    sensor.ds_fan_state:
+      <<: *contained
+      icon: mdi:fan
+
+    sensor.downstairs_humidity:
+      <<: *contained
+      icon: mdi:water-percent
+
+    sensor.ds_climate_mode:
+      <<: *contained
+      icon: mdi:nest-thermostat
+
+    sensor.front_entry_fibaro_multisensor_temperature:
+      <<: *contained
+      friendly_name: "Front Entry Temperature"
+      icon: mdi:thermometer
+
+    sensor.broadlink_sensor_temperature:
+      <<: *contained
+      friendly_name: "Entryway Temperature"
+      icon: mdi:thermometer
+
+
+#####################################################################
+### Group
+#####################################################################
+group:
+  Downstairs Climate:
+    entities:
+      - climate.downstairs
+      - sensor.downstairs_temperature
+      - sensor.living_room_temperature
+      - sensor.office_temperature
+      - sensor.front_entry_fibaro_multisensor_temperature
+      - sensor.broadlink_sensor_temperature
+      - sensor.ds_avg_temp
+      - sensor.downstairs_humidity
+
+  Downstairs Ecobee:
+    control: hidden
+    entities:
+      - sensor.ds_climate_mode
+      - sensor.ds_fan_state
+      - script.ecobee_ds_home
+      - script.ecobee_ds_away
+      - script.ecobee_ds_sleep
+      - script.ecobee_ds_resume
+
+
+#####################################################################
+### Sensor
+#####################################################################
+sensor:
+  - platform: template
+    sensors:
+      ds_avg_temp:
+        friendly_name: "Downstairs Average Temperature"
+        unit_of_measurement: "F"
+        value_template: >-
+          {{ ((float(states.sensor.downstairs_temperature.state) + float(states.sensor.living_room_temperature.state) + float(states.sensor.office_temperature.state) + float(states.sensor.front_entry_fibaro_multisensor_temperature.state) + float(states.sensor.broadlink_sensor_temperature.state)) / 5) | round(1) }}
+
+  - platform: template
+    sensors:
+      ds_climate_mode:
+        friendly_name: "Downstairs HVAC Mode"
+        value_template: "{{ (states.climate.downstairs.attributes|default({})).mode|default('unknown') }}"
+
+  - platform: template
+    sensors:
+      ds_fan_state:
+        friendly_name: "Downstairs Fan State"
+        value_template: "{{ (states.climate.downstairs.attributes|default({})).fan|default('unknown') }}"
+
+
+  ################################################
+  ## Broadlink RM 2 Pro
+  ################################################
+  - platform: broadlink
+    host: !secret broadlink_ip
+    mac: !secret broadlink_mac
+    monitored_conditions:
+      - 'temperature'
+
+
+#####################################################################
+### Script
+#####################################################################
+script:
+  ecobee_ds_home:
+    sequence:
+      - service: climate.set_hold_mode
+        data:
+          entity_id: climate.downstairs
+          hold_mode: 'home'
+
+  ecobee_ds_away:
+    sequence:
+      - service: climate.set_hold_mode
+        data:
+          entity_id: climate.downstairs
+          hold_mode: 'away'
+
+  ecobee_ds_sleep:
+    sequence:
+      - service: climate.set_hold_mode
+        data:
+          entity_id: climate.downstairs
+          hold_mode: 'sleep'
+
+  ecobee_ds_resume:
+    sequence:
+      - service: climate.ecobee_resume_program
+        data:
+          entity_id: climate.downstairs
+          resume_all: 'true'
+
+
+#####################################################################
+### Automation
+#####################################################################
+automation:
+  ### Home Mode
+  - alias: Climate Downstairs Home Schedule
+    initial_state: 'on'
+    trigger:
+      - platform: time
+        at: '06:00:00'
+
+    condition:
+      condition: or
+      conditions:
+        - condition: state
+          entity_id: group.all_devices
+          state: 'home'
+
+        - condition: state
+          entity_id: input_boolean.visitor_mode
+          state: 'on'
+
+    action:
+      - service: climate.set_hold_mode
+        data:
+          entity_id: climate.downstairs
+          hold_mode: 'home'
+
+
+  ### Sleep Mode Mode
+  - alias: Climate Downstairs Sleep Schedule
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: script.bedtime
+        from: 'off'
+        to: 'on'
+
+      - platform: state
+        entity_id: input_boolean.after_hours
+        from: 'off'
+        to: 'on'
+
+    action:
+      - service: climate.set_hold_mode
+        data:
+          entity_id: climate.downstairs
+          hold_mode: 'sleep'
+
+
+  ### Peak Hours Mode
+  - alias: Climate Downstairs Peak Hours
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: input_boolean.peak_hours
+        from: 'off'
+        to: 'on'
+
+    action:
+      - service: climate.set_hold_mode
+        data:
+          entity_id: climate.downstairs
+          hold_mode: 'away'

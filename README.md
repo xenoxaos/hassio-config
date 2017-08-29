@@ -1,4 +1,4 @@
-# Home Assistant (hass.io) Configuration by [@rrubin0]
+# Home Assistant (hass.io) Configuration by @rrubin0
 [Hass.io](https://home-assistant.io/hassio) is the latest development from the Home Assistant [Community](https://community.home-assistant.io/)
 
 This repo is for sharing my Home Assistant Configuration after my migration to Hass.io

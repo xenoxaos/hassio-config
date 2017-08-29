@@ -7,17 +7,17 @@ This repo is for sharing my Home Assistant Configuration after my migration to H
 My Home Assistant setup is running on an [ASUS Chromebox](https://www.asus.com/us/Chrome-Devices/Chromebox/) running Ubuntu Server 16.04. [This tutorial](https://rogerstringer.com/2014/09/20/upgrade-asus-chromebox-ram-bigger-ssd-ubuntu/) gives a great explanation of how to get Ubuntu running on the Chromebox which is an ideal platform for hass.io ith no immediate need to deviate from the stock components. 
 
 Additionally, I am using the [Aeon Labs Z-Wave Stick (Gen 5)](http://amzn.to/2id0EsA) to control my z-wave devices.
-
-
-**Software and Addons:**
+#
+#
+# Software and Addons:
 * [Dasher]for repurposing Amazon Dash Buttons (https://github.com/maddox/dasher)
 * [Homebridge](https://github.com/nfarina/homebridge)
 * LetsEncrypt Addon for hass.io
 * Terminal Addon for hass.io
 * MQTT Addon for hass.io
 * Floorplan ((coming soon))
-
-**Devices:**
+#
+# Devices:
 * GE Z-wave dimmer and switches
 * GE Z-wave Outdoor Module
 * Pentair 5G LED Pool Light

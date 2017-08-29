@@ -18,7 +18,6 @@ Additionally, I am using the [Aeon Labs Z-Wave Stick (Gen 5)](http://amzn.to/2id
 * Floorplan ((coming soon))
 
 **Devices:**
-* Apple/iOS/tvOS Devices - [iPhone 6 Plus](http://amzn.to/2id1XId), [iPad Air](http://amzn.to/2iD9dMu), Apple TV (Gen 4)
 * GE Z-wave dimmer and switches
 * GE Z-wave Outdoor Module
 * Pentair 5G LED Pool Light

@@ -14,6 +14,7 @@ Additionally, I am using the [Aeon Labs Z-Wave Stick (Gen 5)](http://amzn.to/2id
 * LetsEncrypt Addon for hass.io
 * Terminal Addon for hass.io
 * MQTT Addon for hass.io
+* Floorplan ((coming soon))
 
 **Devices:**
 * Apple/iOS/tvOS Devices - [iPhone 6 Plus](http://amzn.to/2id1XId), [iPad Air](http://amzn.to/2iD9dMu), Apple TV (Gen 4)

@@ -1,5 +1,5 @@
 # Home Assistant (hass.io) Configuration by [@rrubin0]
-[Hass.io](https://home-assistant.io/hassio)
+[Hass.io](https://home-assistant.io/hassio) is the latest development from the Home Assistant [Community](https://community.home-assistant.io/)
 
 This is my Home Assistant Configuration after migration to Hass.io
 
@@ -7,7 +7,7 @@ I have Home Assistant running on a ASUS Chromebox running Ubuntu Server 16.04 wi
 
 Software I am running:
 * [Home Assistant](https://home-assistant.io/)
-* [Dasher] for repurposing Amazon Dash Buttons (https://github.com/maddox/dasher)
+* [Dasher]for repurposing Amazon Dash Buttons (https://github.com/maddox/dasher)
 * [Homebridge](https://github.com/nfarina/homebridge)
 
 **Devices in Use:**
@@ -18,10 +18,10 @@ Software I am running:
 * Philips Hue
 * Broadlink RM2 Pro
 * Iris by Lowe's (slowly phasing out)
-* [Aeotec Minimotes] (https://www.youtube.com/watch?v=5Vc1Ift7ND8)
+* [Aeotec Minimotes](https://www.youtube.com/watch?v=5Vc1Ift7ND8)
 * Aeotec Z-Wave Door Sensor
 * Amazon Echo Dot
-[* Amazon Dash Buttons] (https://www.youtube.com/watch?v=qZpJ9W0wCks)
+[* Amazon Dash Buttons](https://www.youtube.com/watch?v=qZpJ9W0wCks)
 * Amazon Dash Wand
 * Amazon FireTV
 * Kodi Media Player
@@ -35,7 +35,7 @@ Software I am running:
 * Flux LED RGBW bulb
 * Flux LED RGBW Strips
 * Yale Touchscreen Door Locks
-* [DIY Multisensor] (https://www.youtube.com/watch?v=jpjfVc-9IrQ&t=3s)
-* [Sonoff Wifi Switches] (https://www.youtube.com/watch?v=-JxPWA-qxAk&t=912s)
-[* Etekcity RF Switches] (https://www.youtube.com/watch?v=5UUazFbK-Hg&t=86s)
-* Somfy Roller Shades with [Z-Wave ZIRTSI-II Bridge] (https://www.blindsgalore.com/product/255716/bali-zirtsiii-zwave-bridge-for-home-automation-systems)
+* [DIY Multisensor](https://www.youtube.com/watch?v=jpjfVc-9IrQ&t=3s)
+* [Sonoff Wifi Switches](https://www.youtube.com/watch?v=-JxPWA-qxAk&t=912s)
+[* Etekcity RF Switches](https://www.youtube.com/watch?v=5UUazFbK-Hg&t=86s)
+* Somfy Roller Shades with [Z-Wave ZIRTSI-II Bridge](https://www.blindsgalore.com/product/255716/bali-zirtsiii-zwave-bridge-for-home-automation-systems)
